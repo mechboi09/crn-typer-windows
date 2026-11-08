@@ -29,8 +29,10 @@ Fast mode may outrun a busy browser. Test on a practice form first. Selecting Fa
 - Clear partially entered text before trying again.
 - CRNs stay in memory until the app closes. No network calls, credentials, or saved CRN lists.
 
-This unofficial utility cannot inspect the active field or confirm whether a class was accepted. The EXE uses Windows' built-in .NET Framework. [Mac version](https://github.com/mechboi09/crn-typer-mac).
+This unofficial utility cannot inspect the active field or confirm whether a class was accepted. The EXE uses Windows' built-in .NET Framework.
 
 ## Source
 
 The application source is in [src/CRNTyper.cs](src/CRNTyper.cs). Normal and Fast sequence checks passed; live registration behavior needs user testing.
+
+**Using a Mac?** [Get CRN Typer for Mac](https://github.com/mechboi09/crn-typer-mac).
