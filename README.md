@@ -1,10 +1,10 @@
-# CRN typer for Windows
+# CRN Typer - AUB
 
-**[Download CRN typer.exe](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/download/CRN%20typer.exe)**
+**[Download CRN Typer - AUB.exe](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/download/CRN%20Typer%20-%20AUB.exe)**
 
 ## How to use
 
-1. Close any older CRN typer apps and open **CRN typer.exe**.
+1. Close any older CRN Typer - AUB apps and open **CRN Typer - AUB.exe**.
 2. Enter up to **seven CRNs** in each option.
 3. Click the first empty CRN box in your browser.
 4. Press **F1–F4** for the matching option.

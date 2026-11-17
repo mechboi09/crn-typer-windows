@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-[assembly: System.Reflection.AssemblyTitle("CRN typer")]
-[assembly: System.Reflection.AssemblyProduct("CRN typer")]
+[assembly: System.Reflection.AssemblyTitle("CRN Typer - AUB")]
+[assembly: System.Reflection.AssemblyProduct("CRN Typer - AUB")]
 namespace CRNTyper {
 
     public class ModeToggle : Control {
@@ -171,7 +171,7 @@ namespace CRNTyper {
             if(e.KeyCode==Keys.Tab||e.KeyCode==Keys.Escape||e.KeyCode==Keys.Left||e.KeyCode==Keys.Right||e.KeyCode==Keys.Up||e.KeyCode==Keys.Down)ClearColumnSelection();
         }
         void BuildEditor(){
-            ClientSize=new Size(298,290);Text="CRN typer";
+            ClientSize=new Size(298,290);Text="CRN Typer - AUB";
             for(int col=0;col<4;col++){
                 int option=col;var group=new GroupBox{Text="Option "+(col+1),Location=new Point(7+col*72,6),Size=new Size(69,195)};Controls.Add(group);
                 names[col]=new TextBox{Text="Option "+(col+1)};
@@ -182,13 +182,13 @@ namespace CRNTyper {
                     box.KeyDown+=(a,e)=>ColumnKeyDown(option,box,e);box.MouseDown+=(a,e)=>{ClearColumnSelection();lastABox=null;};box.KeyPress+=(a,e)=>{if(selectedColumn==option&&e.KeyChar>='0'&&e.KeyChar<='9'){ClearColumnAndFocus(option);boxes[option][0].Text=e.KeyChar.ToString();boxes[option][0].Focus();boxes[option][0].SelectionStart=1;e.Handled=true;}};
                 }
             }
-            speed.Location=new Point(8,211);speed.Size=new Size(125,26);Controls.Add(speed);var tip=new Button{Text="Tips",Location=new Point(250,211),Size=new Size(40,26)};tip.Click+=(sender,e)=>MessageBox.Show(this,"- Use Normal mode (200 ms) to enter all your CRNs in one option, especially when the courses aren’t in high demand. \n- For high-demand courses, use Fast mode (1ms) and organize your CRNs across two or three options, placing your highest priority courses in Option 1.","CRN typer - Tips",MessageBoxButtons.OK,MessageBoxIcon.Information);Controls.Add(tip);state.Location=new Point(8,244);state.Size=new Size(282,42);state.Text="Ready. Focus the first CRN box, then F1-F4. Escape cancels.";Controls.Add(state);
+            speed.Location=new Point(8,211);speed.Size=new Size(125,26);Controls.Add(speed);var tip=new Button{Text="Tips",Location=new Point(250,211),Size=new Size(40,26)};tip.Click+=(sender,e)=>MessageBox.Show(this,"- Use Normal mode (200 ms) to enter all your CRNs in one option, especially when the courses aren’t in high demand. \n- For high-demand courses, use Fast mode (1ms) and organize your CRNs across two or three options, placing your highest priority courses in Option 1.","CRN Typer - AUB - Tips",MessageBoxButtons.OK,MessageBoxIcon.Information);Controls.Add(tip);state.Location=new Point(8,244);state.Size=new Size(282,42);state.Text="Ready. Focus the first CRN box, then F1-F4. Escape cancels.";Controls.Add(state);
 
             loading=false;for(int c=0;c<4;c++){visibleRows[c]=Maximum;UpdateRows(c);}
             
         }
         public Typer() {
-            Text="CRN typer"; ClientSize=new Size(428,428); FormBorderStyle=FormBorderStyle.FixedSingle;
+            Text="CRN Typer - AUB"; ClientSize=new Size(428,428); FormBorderStyle=FormBorderStyle.FixedSingle;
             MaximizeBox=false; StartPosition=FormStartPosition.CenterScreen; AutoScaleMode=AutoScaleMode.Dpi;
             Font=new Font("Segoe UI",9); BackColor=SystemColors.Control;
             BuildEditor();

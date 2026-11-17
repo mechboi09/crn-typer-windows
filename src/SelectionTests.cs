@@ -5,7 +5,7 @@ class SelectionTests {
  static void Release(LinkedCrnBox b){typeof(LinkedCrnBox).GetMethod("OnKeyUp",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(b,new object[]{new KeyEventArgs(Keys.A)});}
  [STAThread]static void Main(){
  using(var form=new Typer()){
- Check(form.Text=="CRN typer","App name");Check(form.Controls.OfType<ModeToggle>().Single().Fast,"Fast default toggle retained");
+ Check(form.Text=="CRN Typer - AUB","App name");Check(form.Controls.OfType<ModeToggle>().Single().Fast,"Fast default toggle retained");
  var groups=form.Controls.OfType<GroupBox>().ToArray();Check(groups.Length==4,"Four columns");var boxes=groups[0].Controls.OfType<Panel>().SelectMany(p=>p.Controls.OfType<LinkedCrnBox>()).ToArray();Check(boxes.Length==7,"Seven boxes");
  boxes[0].PasteValues("00123,90002\n90003");Key(boxes[0],Keys.Control|Keys.A);Check(boxes[0].SelectionLength==5,"First Ctrl+A selects current CRN");
  var selected=typeof(Typer).GetField("selectedColumn",BindingFlags.Instance|BindingFlags.NonPublic);Check((int)selected.GetValue(form)==-1,"One press doesn't select column");
