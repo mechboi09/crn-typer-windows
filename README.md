@@ -26,12 +26,12 @@ The small Normal/Fast switch starts in **Fast**. The inactive label is gray, wit
 
 | Mode | Sequence between CRNs |
 | --- | --- |
-| Normal | Tab, then a requested **200 ms** pause, relying on the page to create/focus the next box. |
-| Fast | Tab + Enter to activate Add Another CRN, then a requested **1 ms** pause. |
+| Normal | Tab, then a **200 ms** pause, relying on the page to create/focus the next box. |
+| Fast | Tab + Enter to activate Add Another CRN, then a **1 ms** pause. |
 
 Both finish with **Tab, Tab, Enter**. Actual timing depends on Windows and the browser.
 
-Escape cancels. Switching windows or holding modifier keys stops a run. Changes of tab or focused field inside the same browser window are not detected. The app sends keys; it cannot verify the active field, page acceptance or registration success. Test on an offline practice form first. Live registration has not been verified.
+Escape cancels. Switching windows or holding modifier keys stops a run. Changes of tab or focused field inside the same browser window are not detected. The app sends keys; it cannot verify the active field, page acceptance or registration success. Test on an offline practice form first.
 
 ## Source and checks
 
