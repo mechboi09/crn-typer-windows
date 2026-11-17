@@ -1,23 +1,40 @@
-# CRN Typer for AUB — Windows
+# CRN typer for Windows
 
-[Download AUB compact edition](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/download/CRN-Typer-Windows.zip)
+**[Download CRN typer.exe](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/download/CRN%20typer.exe)**
 
-Four compact columns labelled **Option 1 (F1)** through **Option 4 (F4)**. Paste a CRN list directly into any box to fill that box and the boxes below it. Spaces, commas, tabs and newlines are accepted. **Clear all** empties all four options.
-
-**No autosave:** closing the app discards the CRNs. No settings files are created, read or written. Older settings files are ignored.
+One standalone EXE. No ZIP, installer or bundled README. These are the instructions.
 
 ## Use
 
-Extract and open **CRN-Typer-AUB-Compact.exe**. Close other typers first. Fill up to six CRNs per option, focus the first empty browser CRN field and press F1–F4.
+1. Close any older CRN typer apps to free the F1–F4 shortcuts.
+2. Open **CRN typer.exe** and enter up to **seven CRNs per option**.
+3. Click the first empty CRN box on the practice/registration form.
+4. Press **F1**, **F2**, **F3** or **F4** for the matching column, then release the key.
+5. Review the result in Summary. The app ends at **Add to Summary**; it does not intentionally activate the separate Submit button.
 
-Normal requests **200 ms**, Fast requests 1 ms and activates Add Another CRN. Both end with **Tab Tab Enter**, targeting Add to Summary. The separate Submit button is left to you. Timing and page acceptance are not guaranteed.
+## Editing
 
-Escape cancels; changing windows or holding modifier keys stops the run. Browser tab changes are not detected. Test on an offline practice form. This unofficial app cannot inspect the field or verify registration.
+- Four compact columns; digits only, with leading zeros retained.
+- Paste a list directly into any box. Spaces, commas, tabs and newlines separate CRNs. Pasting fills that box and those below it, replacing the remaining entries below. Invalid or duplicate pasted values are rejected.
+- **Ctrl+A once** selects the current CRN. **Twice within 0.7 seconds** selects the numbers in that column.
+- Copy, Cut, Paste and Delete/Backspace apply to a selected column. Clearing it returns the cursor to the first box. The other columns remain unchanged.
+- CRNs are kept in memory only. **No autosave or settings files.** Closing the app discards the entries.
 
-## Separate LAU app
+## Speed
 
-[Download LAU compact edition](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/lau/CRN-Typer-LAU-Windows.zip) · [LAU instructions](lau/README.md)
+The small Normal/Fast switch starts in **Fast**. The inactive label is gray, with a black switch and outlined white knob. **Tips** opens the in-app notes.
 
-The LAU executable is separate: ten CRNs per option, always Instant, no speed selector or status captions. It sends Tabs only between CRNs, then one final Enter, which may submit immediately. Already queued input cannot be recalled.
+| Mode | Sequence between CRNs |
+| --- | --- |
+| Normal | Tab, then a requested **200 ms** pause, relying on the page to create/focus the next box. |
+| Fast | Tab + Enter to activate Add Another CRN, then a requested **1 ms** pause. |
 
-[Mac version](https://github.com/mechboi09/crn-typer-mac)
+Both finish with **Tab, Tab, Enter**. Actual timing depends on Windows and the browser.
+
+Escape cancels. Switching windows or holding modifier keys stops a run. Changes of tab or focused field inside the same browser window are not detected. The app sends keys; it cannot verify the active field, page acceptance or registration success. Test on an offline practice form first. Live registration has not been verified.
+
+## Source and checks
+
+Source: [src/CRNTyper.cs](src/CRNTyper.cs). Windows' built-in .NET Framework is used; no additional packages are bundled. Tests cover typing sequences, speed switching, numeric input, paste parsing, column selection/deletion and first-box focus.
+
+[Mac version](https://github.com/mechboi09/crn-typer-mac) · [Separate LAU version](lau/README.md)
