@@ -9,19 +9,17 @@ using System.Windows.Forms;
 
 namespace CRNTyper {
 
-    public class Saved {
-        public string[][] Values; public string[] Names; public int[] Visible; public int Speed;
-    }
-    public static class SettingsStore {
-        public static void Write(string path,Saved value) {
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
-            string temp=path+".tmp";
-            using(var stream=new System.IO.FileStream(temp,System.IO.FileMode.Create,System.IO.FileAccess.Write,System.IO.FileShare.None)) {
-                new System.Xml.Serialization.XmlSerializer(typeof(Saved)).Serialize(stream,value);stream.Flush(true);
-            }
-            if(System.IO.File.Exists(path))System.IO.File.Replace(temp,path,path+".bak");else System.IO.File.Move(temp,path);
+    public class LinkedCrnBox : TextBox {
+        public Action<string> PasteValues;
+        protected override void WndProc(ref Message m){
+            if(m.Msg==0x0302 && PasteValues!=null){try{PasteValues(Clipboard.GetText());}catch(Exception ex){MessageBox.Show(ex.Message,"Check CRNs");}return;}
+            base.WndProc(ref m);
         }
-        public static Saved Read(string path) {using(var stream=System.IO.File.OpenRead(path))return (Saved)new System.Xml.Serialization.XmlSerializer(typeof(Saved)).Deserialize(stream);}
+    }
+
+    public static class CrnLists {
+
+
         public static string[] Parse(string text,int max) {
             var values=text.Split(new[]{' ', '\t','\r','\n',','},StringSplitOptions.RemoveEmptyEntries);
             if(values.Length>max||values.Any(v=>v.Length>5||v.Any(c=>c<'0'||c>'9'))||values.Distinct().Count()!=values.Length)throw new ArgumentException("Use up to "+max+" unique CRNs, 1-5 digits each, separated by spaces, commas or new lines.");
@@ -104,44 +102,35 @@ namespace CRNTyper {
         readonly TextBox[] names=new TextBox[4];
         readonly Panel[][] rowPanels=new Panel[4][];
         readonly int[] visibleRows=new int[]{3,3,3,3};
-        readonly System.Windows.Forms.Timer saveTimer=new System.Windows.Forms.Timer();
         bool loading=true;
         const int Maximum=10;
-        readonly string settingsPath=System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"CRNTyper-LAU","settings.xml");
-        void QueueSave(){if(loading)return;saveTimer.Stop();saveTimer.Start();}
-        Saved Snapshot(){return new Saved{Values=boxes.Select(c=>c.Select(b=>b.Text).ToArray()).ToArray(),Names=names.Select(n=>n.Text).ToArray(),Visible=(int[])visibleRows.Clone(),Speed=speed.SelectedIndex};}
-        void Save(){if(loading)return;saveTimer.Stop();try{SettingsStore.Write(settingsPath,Snapshot());}catch(Exception ex){SetState("Could not save settings: "+ex.Message,true);}}
         void UpdateRows(int option){for(int i=0;i<Maximum;i++)rowPanels[option][i].Visible=i<visibleRows[option];}
         void Paste(int option){
             using(var dialog=new Form{Text="Paste CRN list",ClientSize=new Size(370,245),StartPosition=FormStartPosition.CenterParent,MinimizeBox=false,MaximizeBox=false}){
                 var input=new TextBox{Multiline=true,ScrollBars=ScrollBars.Vertical,Location=new Point(15,15),Size=new Size(340,170)};
                 var ok=new Button{Text="Use this list",Location=new Point(230,200),Size=new Size(125,30)};
-                dialog.Controls.Add(input);dialog.Controls.Add(ok);ok.Click+=(s,e)=>{try{var values=SettingsStore.Parse(input.Text,Maximum);loading=true;for(int i=0;i<Maximum;i++)boxes[option][i].Text=i<values.Length?values[i]:"";visibleRows[option]=Math.Max(3,values.Length);UpdateRows(option);loading=false;QueueSave();dialog.Close();SetState("Ready. List loaded; autosaving locally.");}catch(ArgumentException ex){MessageBox.Show(dialog,ex.Message,"Check CRNs");}};dialog.ShowDialog(this);
+                dialog.Controls.Add(input);dialog.Controls.Add(ok);ok.Click+=(s,e)=>{try{var values=CrnLists.Parse(input.Text,Maximum);loading=true;for(int i=0;i<Maximum;i++)boxes[option][i].Text=i<values.Length?values[i]:"";visibleRows[option]=Maximum;UpdateRows(option);loading=false;dialog.Close();SetState("Ready. List loaded.");}catch(ArgumentException ex){MessageBox.Show(dialog,ex.Message,"Check CRNs");}};dialog.ShowDialog(this);
             }
         }
         void BuildEditor(){
-            ClientSize=new Size(470,610);Text="CRN Typer - LAU";
-            tabs.Location=new Point(15,15);tabs.Size=new Size(440,450);Controls.Add(tabs);
+            ClientSize=new Size(410,350);Text="CRN Typer - LAU";
             for(int col=0;col<4;col++){
-                int option=col;var page=new TabPage("Option "+(col+1)+" (F"+(col+1)+")");tabs.TabPages.Add(page);
-                names[col]=new TextBox{Text="Option "+(col+1),Location=new Point(18,18),Size=new Size(265,26),MaxLength=40};page.Controls.Add(names[col]);
-                names[col].TextChanged+=(s,e)=>{page.Text=(names[option].Text.Length==0?"Option "+(option+1):names[option].Text)+" (F"+(option+1)+")";QueueSave();};
-                var paste=new Button{Text="Paste list",Location=new Point(300,16),Size=new Size(105,28)};paste.Click+=(s,e)=>Paste(option);page.Controls.Add(paste);
-                boxes[col]=new TextBox[Maximum];rowPanels[col]=new Panel[Maximum];
+                int option=col;var group=new GroupBox{Text="Option "+(col+1)+" (F"+(col+1)+")",Location=new Point(7+col*101,6),Size=new Size(98,299)};Controls.Add(group);
+                names[col]=new TextBox{Text="Option "+(col+1)};
+                boxes[col]=new TextBox[Maximum];rowPanels[col]=new Panel[Maximum];visibleRows[col]=Maximum;
                 for(int row=0;row<Maximum;row++){
-                    int index=row;var panel=new Panel{Location=new Point(18,58+row*33),Size=new Size(390,31)};rowPanels[col][row]=panel;page.Controls.Add(panel);
-                    panel.Controls.Add(new Label{Text="CRN "+(row+1),Location=new Point(0,7),Size=new Size(60,20)});
-                    var box=new TextBox{Location=new Point(70,3),Size=new Size(230,26),MaxLength=5,AccessibleName="Option "+(col+1)+", CRN "+(row+1)};boxes[col][row]=box;panel.Controls.Add(box);box.TextChanged+=(s,e)=>QueueSave();
-                    var remove=new Button{Text="Remove",Location=new Point(310,1),Size=new Size(75,27)};panel.Controls.Add(remove);remove.Click+=(s,e)=>{if(visibleRows[option]<=1)return;for(int i=index;i<Maximum-1;i++)boxes[option][i].Text=boxes[option][i+1].Text;boxes[option][Maximum-1].Text="";visibleRows[option]--;UpdateRows(option);QueueSave();};
+                    var panel=new Panel{Location=new Point(7,21+row*24),Size=new Size(84,23)};rowPanels[col][row]=panel;group.Controls.Add(panel);
+                    int index=row;var box=new LinkedCrnBox{Location=new Point(0,0),Size=new Size(84,22),MaxLength=5,AccessibleName="Option "+(col+1)+", CRN "+(row+1)};boxes[col][row]=box;panel.Controls.Add(box);box.PasteValues=text=>{if(running)return;var values=CrnLists.Parse(text,Maximum-index);loading=true;try{for(int i=index;i<Maximum;i++)boxes[option][i].Text=i-index<values.Length?values[i-index]:"";}finally{loading=false;}};
                 }
-                var add=new Button{Text="+ Add CRN",Location=new Point(18,65+Maximum*33),Size=new Size(125,29)};page.Controls.Add(add);add.Click+=(s,e)=>{if(visibleRows[option]>=Maximum){SetState("Maximum "+Maximum+" CRNs per option.");return;}visibleRows[option]++;UpdateRows(option);boxes[option][visibleRows[option]-1].Focus();QueueSave();};UpdateRows(col);
+                var paste=new Button{Text="Paste",Location=new Point(7,24+Maximum*24),Size=new Size(84,24)};group.Controls.Add(paste);paste.Click+=(a,e)=>{if(!running)Paste(option);};
             }
-            speed.Location=new Point(15,480);speed.Size=new Size(440,28);speed.DropDownStyle=ComboBoxStyle.DropDownList;speed.Items.AddRange(new object[]{"Normal (200 ms)","Fast (1 ms requested)","Instant (single batch)"});speed.SelectedIndex=0;speed.SelectedIndexChanged+=(s,e)=>{QueueSave();SetState(speed.SelectedIndex==1?"fast is guaranteed dean's warning (just kidding)":"Ready. Settings saved locally; F1-F4 starts an option.");};Controls.Add(speed);
-            state.Location=new Point(15,520);state.Size=new Size(440,58);Controls.Add(state);state.Text="Ready. Click the first empty browser CRN box; F1-F4 starts.\nEscape cancels. Settings autosave locally.";
-            try{if(System.IO.File.Exists(settingsPath)){var saved=SettingsStore.Read(settingsPath);if(saved.Values==null||saved.Values.Length!=4||saved.Names==null||saved.Names.Length!=4||saved.Visible==null||saved.Visible.Length!=4)throw new Exception("Invalid settings file");for(int c=0;c<4;c++){names[c].Text=saved.Names[c]??"";for(int r=0;r<Maximum;r++)boxes[c][r].Text=saved.Values[c]!=null&&r<saved.Values[c].Length?saved.Values[c][r]:"";int occupied=Array.FindLastIndex(boxes[c],b=>b.Text.Length>0)+1;visibleRows[c]=Math.Max(Math.Max(1,Math.Min(Maximum,saved.Visible[c])),occupied);UpdateRows(c);}speed.SelectedIndex=Math.Max(0,Math.Min(speed.Items.Count-1,saved.Speed));}}catch(Exception ex){SetState("Settings could not be loaded: "+ex.Message,true);}
-            saveTimer.Interval=400;saveTimer.Tick+=(s,e)=>Save();loading=false;FormClosing+=(s,e)=>Save();
-        }
+            speed.Items.AddRange(new object[]{"Normal (200 ms)","Fast (1 ms requested)","Instant"});speed.SelectedIndex=2;
+            
+            var clear=new Button{Text="Clear all",Location=new Point(8,319),Size=new Size(394,27)};Controls.Add(clear);clear.Click+=(a,e)=>{if(running)return;loading=true;foreach(var column in boxes)foreach(var box in column)box.Text="";loading=false;};
 
+            loading=false;for(int c=0;c<4;c++){visibleRows[c]=Maximum;UpdateRows(c);}
+            speed.SelectedIndex=2;
+        }
         public Typer() {
             Text="CRN Typer - LAU"; ClientSize=new Size(428,548); FormBorderStyle=FormBorderStyle.FixedSingle;
             MaximizeBox=false; StartPosition=FormStartPosition.CenterScreen; AutoScaleMode=AutoScaleMode.Dpi;
@@ -168,7 +157,7 @@ namespace CRNTyper {
             }
             base.WndProc(ref m);
         }
-        void SetState(string text, bool error=false) {state.Text=text;state.ForeColor=error?Color.Firebrick:SystemColors.ControlText;}
+        void SetState(string text, bool error=false) {state.Text=text;state.ForeColor=error?Color.Firebrick:SystemColors.ControlText;if(error)MessageBox.Show(this,text,"CRN Typer - LAU");}
         void UI(Action update) {if(!IsDisposed && IsHandleCreated)try{BeginInvoke(update);}catch(InvalidOperationException){}}
         void Guard(IntPtr target, CancellationToken token) {
             token.ThrowIfCancellationRequested();

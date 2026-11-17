@@ -15,7 +15,16 @@ class Tests {
  Check(p.Count(s=>s.Kind=="tab-tab")==1,"AUB final grouped Tabs");Check(p.Count(s=>s.Kind==(fast?"tab-enter":"tab"))==n-1,"AUB intermediate navigation");
 #endif
  }
- Check(SettingsStore.Parse("00123,90002\n90003\t90004",max).SequenceEqual(new[]{"00123","90002","90003","90004"}),"paste parsing");Invalid(()=>SettingsStore.Parse("1,1",max));Invalid(()=>SettingsStore.Parse("abc",max));Invalid(()=>SettingsStore.Parse("123456",max));Invalid(()=>Sequence.Build(new string[0]));Invalid(()=>Sequence.Build(Enumerable.Range(0,max+1).Select(i=>i.ToString()).ToArray()));
- var directory=Path.Combine(Path.GetTempPath(),"CRN-test-"+Guid.NewGuid());var path=Path.Combine(directory,"settings.xml");var saved=new Saved{Values=new[]{new[]{"00123",""},new[]{"90001"},new[]{""},new[]{"90003"}},Names=new[]{"Main & Backup","Two","Three","Four"},Visible=new[]{3,3,3,3},Speed=1};SettingsStore.Write(path,saved);var result=SettingsStore.Read(path);Check(result.Values[0][0]=="00123"&&result.Names[0]=="Main & Backup"&&result.Speed==1,"save/reload");saved.Values[0][0]="99999";SettingsStore.Write(path,saved);Check(SettingsStore.Read(path).Values[0][0]=="99999"&&SettingsStore.Read(path+".bak").Values[0][0]=="00123","atomic replace and backup");Console.WriteLine("PASS: all sequence sizes/modes, 200ms, paste validation, persistence roundtrip, atomic overwrite, backup, names and leading zeros. No keys sent.");
+ Check(CrnLists.Parse("00123,90002\n90003\t90004",max).SequenceEqual(new[]{"00123","90002","90003","90004"}),"paste parsing");Invalid(()=>CrnLists.Parse("1,1",max));Invalid(()=>CrnLists.Parse("abc",max));Invalid(()=>CrnLists.Parse("123456",max));Invalid(()=>Sequence.Build(new string[0]));Invalid(()=>Sequence.Build(Enumerable.Range(0,max+1).Select(i=>i.ToString()).ToArray()));
+ using(var form=new Typer()) {
+ var groups=form.Controls.OfType<System.Windows.Forms.GroupBox>().ToArray();Check(groups.Length==4&&groups[0].Text=="Option 1 (F1)","compact columns");
+ var boxes=groups[0].Controls.OfType<System.Windows.Forms.Panel>().SelectMany(panel=>panel.Controls.OfType<LinkedCrnBox>()).ToArray();
+ boxes[0].PasteValues("00123,90002\n90003");Check(boxes[0].Text=="00123"&&boxes[1].Text=="90002"&&boxes[2].Text=="90003","linked paste");
+ var clear=form.Controls.OfType<System.Windows.Forms.Button>().Single(b=>b.Text=="Clear all");typeof(System.Windows.Forms.Button).GetMethod("OnClick",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(clear,new object[]{EventArgs.Empty});Check(boxes.All(b=>b.Text==""),"clear all");
+#if LAU
+ Check(!form.Controls.OfType<System.Windows.Forms.ComboBox>().Any()&&!form.Controls.OfType<System.Windows.Forms.Label>().Any(),"LAU has no speed selector or captions");
+#endif
+ }
+ Console.WriteLine("PASS: sequence sizes and modes, 200ms Normal, paste parsing, validation and leading zeros. No keys sent.");
  }
 }

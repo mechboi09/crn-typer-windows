@@ -1,17 +1,9 @@
 # CRN Typer for LAU — Windows
 
-[Download standalone LAU app](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/lau/CRN-Typer-LAU-Windows.zip)
+[Download standalone EXE package](https://github.com/mechboi09/crn-typer-windows/raw/refs/heads/main/lau/CRN-Typer-LAU-Windows.zip)
 
-## Version 2: saved options and a cleaner editor
+Four compact columns labelled **Option 1 (F1)** through **Option 4 (F4)**. Paste a CRN list directly into any box to fill that box and the boxes below it. Spaces, commas, tabs and newlines are accepted. **Clear all** empties all four options.
 
-- Four named tabs with the same F1–F4 shortcuts.
-- Three CRN rows to start; **+ Add CRN** and **Remove** adjust the list.
-- **Paste list** accepts spaces, commas, tabs or newlines and checks duplicates and invalid CRNs before replacing the option.
-- CRNs, option names, visible rows and speed save locally after a short pause in editing and on quit. They restore when you reopen the app.
-- Settings are written atomically; no account, server or GitHub synchronization is used.
-- Normal now requests **200 ms**. Fast retains 1 ms requested pauses; actual timing depends on the computer and browser.
-- Status reports keys sent; it cannot confirm course acceptance.
+**No autosave:** closing the app discards the CRNs. No settings files are created, read or written. Older settings files are ignored.
 
-Ten CRNs per option. Normal 200 ms, Fast 1 ms requested, Instant single-batch mode. Sequence: CRN, Tab, CRN ... final Enter only. Enter may submit immediately. Review numbers before running. Escape cannot recall Instant events already queued.
-
-Settings: `%APPDATA%\CRNTyper-LAU\settings.xml`. This is a separate executable and storage location from AUB. Close other typers before launching to free F1–F4. No live registration test has been performed.
+Ten CRNs per option. **Always Instant**: no speed selector or status captions. Fill an option, focus the first empty CRN field, then press its F1–F4 key. Tabs go only between entries. The final Enter may submit immediately. Review numbers first. Escape cannot recall an already queued batch. Close other typers first. Errors appear as dialogs. Test on the offline replica; live registration is unverified.
