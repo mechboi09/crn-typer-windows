@@ -4,11 +4,10 @@
 
 ## How to use
 
-1. Close any older CRN Typer - AUB apps and open **CRN Typer - AUB.exe**.
-2. Enter up to **seven CRNs** in each of the four options. Boxes accept digits and keep leading zeros.
-3. On an offline AUB practice form, click the first empty CRN box.
-4. Press **F1–F4** for the matching option.
-5. Review Summary, then press **Submit** yourself.
+1. Open **CRN Typer - AUB.exe**.
+2. Enter up to **seven CRNs** in each of the four options.
+3. Press **F1–F4** for the matching option.
+4. Review Summary, then press **Submit** yourself.
 
 ## Editing
 
@@ -30,3 +29,5 @@ The timing values are programmed pauses; the browser and Windows can affect actu
 **Escape** cancels; switching windows also stops a run. Keep the correct browser tab and field focused, and review the result in Summary.
 
 [Mac version](https://github.com/mechboi09/crn-typer-mac) · [Separate LAU version](lau/README.md) · [Developer notes](docs/DEVELOPMENT.md)
+
+**Make sure you only have one CRN Typer open.**
