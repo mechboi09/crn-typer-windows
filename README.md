@@ -5,8 +5,8 @@
 ## How to use
 
 1. Close any older CRN Typer - AUB apps and open **CRN Typer - AUB.exe**.
-2. Enter up to **seven CRNs** in each option.
-3. Click the first empty CRN box in your browser.
+2. Enter up to **seven CRNs** in each of the four options. Boxes accept digits and keep leading zeros.
+3. On an offline AUB practice form, click the first empty CRN box.
 4. Press **F1–F4** for the matching option.
 5. Review Summary, then press **Submit** yourself.
 
@@ -19,11 +19,13 @@
 
 ## Modes
 
-**Fast is the default.** Use the switch to change modes, or open **Tips** for the notes.
+**Fast is the default.** The compact black **Normal / Fast** switch sits below the options. The inactive label is gray and the white knob has a thin outline. Open **Tips** on the right for the mode notes.
 
 | Normal | Fast |
 | --- | --- |
 | 200 ms | 1 ms |
+
+The timing values are programmed pauses; the browser and Windows can affect actual speed. The app finishes at **Add to Summary**.
 
 **Escape** cancels; switching windows also stops a run. Keep the correct browser tab and field focused, and review the result in Summary.
 
